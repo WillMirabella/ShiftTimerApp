@@ -2,10 +2,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   addSession,
   clearActiveSession,
+  deleteSession as deleteSessionFromStorage,
   getActiveSession,
   getHistory,
   setActiveSession,
   Session,
+  updateSessionTimes,
 } from "../storage";
 
 export function useTimer() {
@@ -81,5 +83,26 @@ export function useTimer() {
     }
   }, [isRunning, start, stop]);
 
-  return { isRunning, elapsedMs, history, isLoading, toggle };
+  const editSession = useCallback(
+    async (id: string, newStartTime: number, newEndTime: number) => {
+      const updatedHistory = await updateSessionTimes(id, newStartTime, newEndTime);
+      setHistory(updatedHistory);
+    },
+    []
+  );
+
+  const deleteSession = useCallback(async (id: string) => {
+    const updatedHistory = await deleteSessionFromStorage(id);
+    setHistory(updatedHistory);
+  }, []);
+
+  return {
+    isRunning,
+    elapsedMs,
+    history,
+    isLoading,
+    toggle,
+    editSession,
+    deleteSession,
+  };
 }

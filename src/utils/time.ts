@@ -16,8 +16,39 @@ export function progressFraction(elapsedMs: number): number {
   return Math.min(elapsedMs / BAR_MAX_MS, 1);
 }
 
-function pad(n: number): string {
+export function pad(n: number): string {
   return n.toString().padStart(2, "0");
+}
+
+export function to12Hour(hour24: number): { hour12: number; isPM: boolean } {
+  const isPM = hour24 >= 12;
+  let hour12 = hour24 % 12;
+  if (hour12 === 0) hour12 = 12;
+  return { hour12, isPM };
+}
+
+export function to24Hour(hour12: number, isPM: boolean): number {
+  const base = hour12 % 12; // 12 -> 0, others unchanged
+  return isPM ? base + 12 : base;
+}
+
+export function buildTimestamp(
+  baseEpochMs: number,
+  hour24: number,
+  minute: number,
+  dayOffset = 0
+): number {
+  const base = new Date(baseEpochMs);
+  const d = new Date(
+    base.getFullYear(),
+    base.getMonth(),
+    base.getDate() + dayOffset,
+    hour24,
+    minute,
+    0,
+    0
+  );
+  return d.getTime();
 }
 
 export function formatDuration(ms: number): string {

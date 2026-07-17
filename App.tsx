@@ -1,17 +1,22 @@
 import { StatusBar } from "expo-status-bar";
+import { useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
+import { EditSessionModal } from "./src/components/EditSessionModal";
 import { HistoryList } from "./src/components/HistoryList";
 import { TimerDisplay } from "./src/components/TimerDisplay";
 import { useTimer } from "./src/hooks/useTimer";
+import { Session } from "./src/storage";
 
 export default function App() {
-  const { isRunning, elapsedMs, history, isLoading, toggle } = useTimer();
+  const { isRunning, elapsedMs, history, isLoading, toggle, editSession, deleteSession } =
+    useTimer();
+  const [editingSession, setEditingSession] = useState<Session | null>(null);
 
   return (
     <View style={styles.container}>
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
       {isLoading ? (
-        <ActivityIndicator size="large" />
+        <ActivityIndicator size="large" color="#d8d8d8" />
       ) : (
         <ScrollView
           contentContainerStyle={styles.content}
@@ -19,9 +24,15 @@ export default function App() {
         >
           <Text style={styles.title}>Shift Timer</Text>
           <TimerDisplay isRunning={isRunning} elapsedMs={elapsedMs} onToggle={toggle} />
-          <HistoryList sessions={history} />
+          <HistoryList sessions={history} onPressSession={setEditingSession} />
         </ScrollView>
       )}
+      <EditSessionModal
+        session={editingSession}
+        onClose={() => setEditingSession(null)}
+        onSave={editSession}
+        onDelete={deleteSession}
+      />
     </View>
   );
 }
@@ -29,7 +40,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#1c1c1c",
     paddingTop: 70,
   },
   content: {
@@ -41,6 +52,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "700",
     marginBottom: 24,
-    color: "#1a1a1a",
+    color: "#d8d8d8",
   },
 });

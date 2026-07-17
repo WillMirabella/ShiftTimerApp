@@ -49,3 +49,23 @@ export async function addSession(session: Session): Promise<Session[]> {
   await AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
   return updated.sort((a, b) => b.startTime - a.startTime);
 }
+
+export async function updateSessionTimes(
+  id: string,
+  startTime: number,
+  endTime: number
+): Promise<Session[]> {
+  const existing = await getHistory();
+  const updated = existing.map((s) =>
+    s.id === id ? { ...s, startTime, endTime, durationMs: endTime - startTime } : s
+  );
+  await AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
+  return updated.sort((a, b) => b.startTime - a.startTime);
+}
+
+export async function deleteSession(id: string): Promise<Session[]> {
+  const existing = await getHistory();
+  const updated = existing.filter((s) => s.id !== id);
+  await AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
+  return updated.sort((a, b) => b.startTime - a.startTime);
+}

@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     fontSize: 48,
     fontVariant: ["tabular-nums"],
     fontWeight: "600",
-    color: "#1a1a1a",
+    color: "#d8d8d8",
   },
   button: {
     paddingVertical: 16,

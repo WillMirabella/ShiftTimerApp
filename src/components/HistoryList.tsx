@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Session } from "../storage";
 import {
   colorForElapsed,
@@ -14,7 +14,13 @@ const BADGE_COLORS: Record<ReturnType<typeof colorForElapsed>, string> = {
   red: "#e74c3c",
 };
 
-export function HistoryList({ sessions }: { sessions: Session[] }) {
+export function HistoryList({
+  sessions,
+  onPressSession,
+}: {
+  sessions: Session[];
+  onPressSession: (session: Session) => void;
+}) {
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Past 7 Days</Text>
@@ -24,7 +30,11 @@ export function HistoryList({ sessions }: { sessions: Session[] }) {
         sessions.map((session) => {
           const color = colorForElapsed(session.durationMs);
           return (
-            <View key={session.id} style={styles.row}>
+            <Pressable
+              key={session.id}
+              style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
+              onPress={() => onPressSession(session)}
+            >
               <View style={[styles.badge, { backgroundColor: BADGE_COLORS[color] }]} />
               <View style={styles.rowText}>
                 <Text style={styles.date}>{formatDateLabel(session.startTime)}</Text>
@@ -33,7 +43,7 @@ export function HistoryList({ sessions }: { sessions: Session[] }) {
                 </Text>
               </View>
               <Text style={styles.duration}>{formatDuration(session.durationMs)}</Text>
-            </View>
+            </Pressable>
           );
         })
       )}
@@ -50,7 +60,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
     marginBottom: 12,
-    color: "#1a1a1a",
+    color: "#d8d8d8",
   },
   empty: {
     color: "#888",
@@ -60,9 +70,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 10,
+    paddingHorizontal: 8,
+    borderRadius: 8,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#ddd",
+    borderBottomColor: "#3a3a3a",
     gap: 12,
+  },
+  rowPressed: {
+    backgroundColor: "#2a2a2a",
   },
   badge: {
     width: 10,
@@ -75,7 +90,7 @@ const styles = StyleSheet.create({
   date: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#1a1a1a",
+    color: "#d8d8d8",
   },
   times: {
     fontSize: 13,
@@ -85,6 +100,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontVariant: ["tabular-nums"],
     fontWeight: "600",
-    color: "#1a1a1a",
+    color: "#d8d8d8",
   },
 });
