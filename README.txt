@@ -1,0 +1,2 @@
+I want the app to make a countdown app (maybe it counts up) that starts after I press a button and displays a progress bar for how long until 8 hours have passed.
+The same start button will also stop the timer. If the timer goes above 8 hours I want the bar to turn yellow and if the timer goes above 10 hours I want it to go red. I want it to also track the previous results from the past week.
